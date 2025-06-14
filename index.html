@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Instruction Tuning of Lightweight Language Models with QLoRA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="config/style.css">
+    <link rel="stylesheet" href="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+</head>
+<body>
+    <div class="header" id="top">
+        <h1 style="font-size:2.5em; font-weight:700; margin-bottom:16px;">Instruction Tuning of Lightweight Language Models with QLoRA</h1>
+        <div class="authors-block" style="text-align:center; margin-bottom:12px;">
+            <div class="authors-list" style="color:#2196f3; font-size:1.15em; font-weight:500;">
+                Jiangtao Xu<sup>1</sup>, Chunlin Tian<sup>2</sup>, Qingbiao Li<sup>2</sup>
+            </div>
+            <div class="affiliations" style="color:#222; font-size:1.05em; margin-top:8px;">
+                <span><sup>1</sup> Harbin Institute of Technology, Shenzhen</span><br>
+                <span><sup>2</sup> University of Macau</span>
+            </div>
+        </div>
+        <div class="links" style="display:flex; justify-content:center; gap:18px; margin-top:24px; flex-wrap:wrap;">
+            <a href="asset/paper.pdf" class="btn btn-dark"><i class="fa fa-file-pdf-o"></i> Paper</a>
+            <a href="https://github.com/JiangtaoXu-AI/qlora_assignment" class="btn btn-dark"><i class="fa fa-github"></i> Code</a>
+            <a href="videos/demo.mp4" class="btn btn-dark"><i class="fa fa-video-camera"></i> Code Demo</a>
+        </div>
+    </div>
+    <div class="content">
+        <div class="hr"></div>
+        <div style="width:100%;display:flex;justify-content:center;">
+            <img src="asset/method.png" alt="Project Main Figure" style="max-width:100%;height:auto;display:block;">
+        </div>
+        <div>
+            <p>
+                <b>TL;DR:</b> This project implements QLoRA to fine-tune DistilGPT-2 on the Alpaca instruction dataset, achieving performance comparable to full fine-tuning while reducing GPU memory usage by over 80%.
+            </p>
+        </div>
+        <div class="hr"></div>
+        <div>
+            <h2>Abstract</h2>
+            <p>
+                Lightweight pretrained models like DistilGPT-2 offer efficient inference and are well-suited for edge deployment.
+                However, task adaptation still requires memory-intensive fine-tuning. In this work, we apply QLoRA—combining 4-
+                bit quantization with Low-Rank Adaptation—to efficiently fine-tune DistilGPT-2 on a subset of the Alpaca dataset.
+                We develop a complete instruction-tuning pipeline, including data preprocessing, QLoRA implementation, inference
+                generation, and model evaluation. Our results show that QLoRA achieves comparable instruction-following performance to full fine-tuning, while updating only 0.48% of model parameters and reducing GPU memory usage by
+                over 80%. On the Alpaca test set and the Self-Instruct dataset, QLoRA improves ROUGE-L by nearly 48% over
+                the base model. The QLoRA-tuned model demonstrates effective instruction-following in scenario-based evaluations—including simple math, daily help, and emotional support—typical of mobile assistants and offline chatbots.
+                These findings demonstrate that QLoRA is a practical solution for instruction tuning in low-resource environments.
+            </p>
+        </div>
+        <div class="hr"></div>
+        <div>
+            <h2>Code Demo</h2>
+            <video controls width="90%">
+                <source src="videos/demo.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        <div class="hr"></div>
+        <div>
+            <h2>Results</h2>
+            <table class="three-line-table">
+                <thead>
+                    <tr><th>Model</th><th>ROUGE-L (Alpaca)</th><th>ROUGE-L (Self-Instruct)</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>No Fine-Tuning</td><td>10.32</td><td>5.85</td></tr>
+                    <tr><td>Full Fine-Tuning</td><td>15.34</td><td>8.56</td></tr>
+                    <tr><td>QLoRA</td><td>15.25</td><td>8.71</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="scenario-section">
+            <h2>Scene evaluation</h2>
+            <div class="scenario-card">
+                <div class="scenario-row">
+                    <span class="icon user"><i class="fa fa-user"></i></span>
+                    <span class="scenario-text"><b>Simple math:</b> If an apple costs 2 yuan and a banana costs 3 yuan, how much is 2 apples and 1 banana?</span>
+                </div>
+                <div class="scenario-row">
+                    <span class="icon model">🤖</span>
+                    <span class="scenario-text">In the case of an apple costing 2 yuan and a banana costing 5 yuan, it would be 6.</span>
+                </div>
+            </div>
+            <div class="scenario-card">
+                <div class="scenario-row">
+                    <span class="icon user"><i class="fa fa-user"></i></span>
+                    <span class="scenario-text"><b>Basic knowledge:</b> Briefly explain what high blood pressure is?</span>
+                </div>
+                <div class="scenario-row">
+                    <span class="icon model">🤖</span>
+                    <span class="scenario-text">Low blood pressure can cause low blood pressure and potentially fatal heart attacks.</span>
+                </div>
+            </div>
+            <div class="scenario-card">
+                <div class="scenario-row">
+                    <span class="icon user"><i class="fa fa-user"></i></span>
+                    <span class="scenario-text"><b>Daily help:</b> Should you wash your hands before eating?</span>
+                </div>
+                <div class="scenario-row">
+                    <span class="icon model">🤖</span>
+                    <span class="scenario-text">You could rinse yourself thoroughly after consuming a meal and eat as much food, but it is important for the person's health and well-being.</span>
+                </div>
+            </div>
+            <div class="scenario-card">
+                <div class="scenario-row">
+                    <span class="icon user"><i class="fa fa-user"></i></span>
+                    <span class="scenario-text"><b>Emotional support:</b> I just feel really down today and I don't know why.</span>
+                </div>
+                <div class="scenario-row">
+                    <span class="icon model">🤖</span>
+                    <span class="scenario-text">Because when you're feeling like the world is not getting better, it's time to take a closer look at your own.</span>
+                </div>
+            </div>
+            <div class="scenario-card">
+                <div class="scenario-row">
+                    <span class="icon user"><i class="fa fa-user"></i></span>
+                    <span class="scenario-text"><b>Story generation:</b> Tell a short story about a rabbit who learns to be brave.</span>
+                </div>
+                <div class="scenario-row">
+                    <span class="icon model">🤖</span>
+                    <span class="scenario-text">Once upon a time, the Rabbit had become an unstoppable force in her quest for survival. However, she was suddenly overcome by fierce competition from vicious enemies and began fighting back against them all at once. She never recovered as much strength or willpower as any other female bunny encountered before. Her courage kept her on track through difficult times and overcame adversity without being intimidated into taking action.</span>
+                </div>
+            </div>
+        </div>
+        <div class="hr"></div>
+        <div style="padding-bottom: 64px; text-align: center;">
+            <h2>Citation</h2>
+            <p>If you find this work useful in your research, please consider citing:</p>
+            <div class="bibtexsection" style="background:#f8f8f8; padding:12px; border-radius:8px; display:inline-block; text-align:left;">
+@project{xu2025qlora,<br>
+  title={Instruction Tuning of Lightweight LMs with QLoRA},<br>
+  author={Jiangtao Xu},<br>
+  year={2025},<br>
+  note={GitHub: https://github.com/JiangtaoXu-AI/qlora_assignment}<br>
+}
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
